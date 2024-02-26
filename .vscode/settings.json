@@ -16,6 +16,6 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "**/*_templ.go": false
+    "**/*_templ.go": true
   }
 }

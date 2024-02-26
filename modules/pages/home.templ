@@ -3,8 +3,10 @@ package pages
 import "tarta.com/modules/components"
 import "tarta.com/modules/catalog"
 
-templ HomePage(products catalog.ProductSearchQuery) {
+templ HomePage(input catalog.ProductSearchInput) {
 	@components.Banners()
-	@components.Shelf(products)
+	<section class="mx-12">
+		@components.Shelf(input)
+	</section>
 	<button hx-get="/about" hx-swap="innerHTML" hx-target="#main-content">Go to about</button>
 }

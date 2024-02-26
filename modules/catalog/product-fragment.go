@@ -1,5 +1,53 @@
 package catalog
 
+const PRODUCT_FRAGMENT = `
+fragment ProductFragment on Product {
+	productId
+	productName
+	items {
+		itemId
+		name
+		images {
+			imageUrl
+		}
+		sellers {
+			sellerId
+			commertialOffer {
+				ListPrice
+				Price
+				Installments {
+					NumberOfInstallments
+					Value
+				}
+				AvailableQuantity
+				discountHighlights {
+					name
+				}
+			}
+		}
+		variations {
+			name
+			values
+		}
+	}
+	brand
+	categoryTree {
+		href
+		name
+	}
+	productReference
+	description
+	properties {
+		name
+		values
+	}
+	clusterHighlights {
+		id
+		name
+	}
+}
+`
+
 type (
 	Image struct {
 		ImageUrl string
@@ -57,3 +105,24 @@ type (
 		ClusterHighlights []ClusterHighlight
 	}
 )
+
+func (product ProductFragment) GetSelectedItem() ItemFragment {
+	return product.Items[0]
+}
+
+func (product ProductFragment) GetSelectedSeller() Seller {
+	return product.GetSelectedItem().Sellers[0]
+}
+
+func (product ProductFragment) GetHighestInstallment() Installment {
+
+	highestInstallment := product.GetSelectedSeller().CommertialOffer.Installments[0]
+
+	for i := range product.GetSelectedSeller().CommertialOffer.Installments {
+		if product.GetSelectedSeller().CommertialOffer.Installments[i].NumberOfInstallments > highestInstallment.NumberOfInstallments {
+			highestInstallment = product.GetSelectedSeller().CommertialOffer.Installments[i]
+		}
+	}
+
+	return highestInstallment
+}

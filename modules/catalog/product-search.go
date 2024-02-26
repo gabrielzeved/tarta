@@ -3,8 +3,9 @@ package catalog
 import (
 	"context"
 	"fmt"
+	"log"
 
-	"github.com/hasura/go-graphql-client"
+	"github.com/machinebox/graphql"
 )
 
 type SelectedFacetInput struct {
@@ -33,42 +34,58 @@ type ProductSearchInput struct {
 	SelectedFacets       []SelectedFacetInput
 }
 
-type ContextDirective struct {
-	provider string
-}
-
-func (cd ContextDirective) Type() graphql.OptionType {
-	return graphql.OptionTypeOperationDirective
-}
-
-func (cd ContextDirective) String() string {
-	return fmt.Sprintf("@context(provider: \"%s\")", cd.provider)
-}
-
 type ProductSearchQuery struct {
 	ProductSearch struct {
 		RecordsFiltered int
 		Products        []ProductFragment
-	} `graphql:"productSearch(from: $from, fullText: $fullText, hideUnavailableItems: $hideUnavailableItems, orderBy: $orderBy, priceRange: $priceRange, salesChannel: $salesChannel, selectedFacets: $selectedFacets, simulationBehavior: $simulationBehavior, to: $to) @context(provider: \"vtex.search-graphql\")"`
+	}
 }
 
-func ProductSearch(client *graphql.Client, input ProductSearchInput) (ProductSearchQuery, error) {
+var GraphQLClient = graphql.NewClient("https://agenciam3.myvtex.com/_v/private/graphql/v1")
 
-	var query = ProductSearchQuery{}
+func ProductSearch(input ProductSearchInput) ProductSearchQuery {
 
-	var variables = map[string]interface{}{
-		"from":                 graphql.Int(input.From),
-		"to":                   graphql.Int(input.To),
-		"fullText":             graphql.String(input.FullText),
-		"orderBy":              graphql.String(input.OrderBy),
-		"priceRange":           graphql.String(input.PriceRange),
-		"salesChannel":         graphql.String(input.SalesChannel),
-		"hideUnavailableItems": graphql.Boolean(input.HideUnavailableItems),
-		"simulationBehavior":   input.SimulationBehavior,
-		"selectedFacets":       input.SelectedFacets,
+	response := ProductSearchQuery{}
+
+	req := graphql.NewRequest(fmt.Sprintf(`
+	%s
+	query ProductSearch(
+		$from: Int = 0
+		$to: Int = 9
+		$fullText: String
+		$orderBy: String = "OrderByScoreDESC"
+		$priceRange: String
+		$salesChannel: String
+		$hideUnavailableItems: Boolean = false
+		$simulationBehavior: SimulationBehavior = default
+		$selectedFacets: [SelectedFacetInput]
+	) {
+		productSearch(
+			from: $from
+			fullText: $fullText
+			hideUnavailableItems: $hideUnavailableItems
+			orderBy: $orderBy
+			priceRange: $priceRange
+			salesChannel: $salesChannel
+			selectedFacets: $selectedFacets
+			simulationBehavior: $simulationBehavior
+			to: $to
+		) @context(provider: "vtex.search-graphql") {
+			recordsFiltered
+			products {
+				...ProductFragment
+			}
+		}
+	}
+	`, PRODUCT_FRAGMENT))
+
+	req.Header.Set("Cache-Control", "no-cache")
+
+	ctx := context.Background()
+
+	if err := GraphQLClient.Run(ctx, req, &response); err != nil {
+		log.Fatal(err)
 	}
 
-	err := client.Query(context.Background(), &query, variables, graphql.OperationName("ProductSearch"), ContextDirective{provider: "vtex.search-graphql"})
-
-	return query, err
+	return response
 }

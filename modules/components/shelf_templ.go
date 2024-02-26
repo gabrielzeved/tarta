@@ -14,8 +14,8 @@ import "tarta.com/modules/catalog"
 
 func ShelfScript() templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_ShelfScript_c49b`,
-		Function: `function __templ_ShelfScript_c49b(){const OPTIONS = { loop: true }
+		Name: `__templ_ShelfScript_8e56`,
+		Function: `function __templ_ShelfScript_8e56(){const OPTIONS = { loop: false, align: 'start', containScroll: 'trimSnaps' }
   const emblaNode = document.querySelector('#shelf .embla')
 
   const prevBtnNode = document.querySelector('#shelf .embla__button--prev')
@@ -74,12 +74,12 @@ func ShelfScript() templ.ComponentScript {
 
   emblaApi.on('destroy', removePrevNextBtnsClickHandlers)
 }`,
-		Call:       templ.SafeScript(`__templ_ShelfScript_c49b`),
-		CallInline: templ.SafeScriptInline(`__templ_ShelfScript_c49b`),
+		Call:       templ.SafeScript(`__templ_ShelfScript_8e56`),
+		CallInline: templ.SafeScriptInline(`__templ_ShelfScript_8e56`),
 	}
 }
 
-func Shelf(products catalog.ProductSearchQuery) templ.Component {
+func Shelf(input catalog.ProductSearchInput) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -92,11 +92,11 @@ func Shelf(products catalog.ProductSearchQuery) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"shelf\" class=\"relative\"><div class=\"pointer-events-none p-4 absolute top-1/2 -translate-y-1/2 w-full flex justify-between items-center text-neutral-400 z-10\"><button class=\"embla__button--prev\"><img src=\"/static/svg/arrow.svg\" class=\"shrink-0\"></button> <button class=\"embla__button--next rotate-180\"><img src=\"/static/svg/arrow.svg\" class=\"shrink-0\"></button></div><div class=\"embla overflow-hidden mx-12\"><div class=\"embla__container flex ml-6\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"shelf\" class=\"relative\"><div class=\"pointer-events-none p-4 absolute top-1/2 -translate-y-1/2 w-full flex justify-between items-center text-neutral-400 z-10\"><button class=\"embla__button--prev pointer-events-auto\"><img src=\"/static/svg/arrow.svg\" class=\"shrink-0\"></button> <button class=\"embla__button--next rotate-180 pointer-events-auto\"><img src=\"/static/svg/arrow.svg\" class=\"shrink-0\"></button></div><div class=\"embla overflow-hidden mx-12\"><div class=\"embla__container flex ml-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, product := range products.ProductSearch.Products {
+		for _, product := range catalog.ProductSearch(input).ProductSearch.Products {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"embla__slide flex-[0_0_calc(25%-24px)] min-w-0 my-0 mx-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -110,7 +110,15 @@ func Shelf(products catalog.ProductSearchQuery) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = ShelfScript().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

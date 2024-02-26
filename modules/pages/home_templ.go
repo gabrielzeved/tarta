@@ -13,7 +13,7 @@ import "bytes"
 import "tarta.com/modules/components"
 import "tarta.com/modules/catalog"
 
-func HomePage(products catalog.ProductSearchQuery) templ.Component {
+func HomePage(input catalog.ProductSearchInput) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -30,11 +30,15 @@ func HomePage(products catalog.ProductSearchQuery) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Shelf(products).Render(ctx, templ_7745c5c3_Buffer)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"mx-12\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button hx-get=\"/about\" hx-swap=\"innerHTML\" hx-target=\"#main-content\">Go to about</button>")
+		templ_7745c5c3_Err = components.Shelf(input).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section><button hx-get=\"/about\" hx-swap=\"innerHTML\" hx-target=\"#main-content\">Go to about</button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -3,7 +3,7 @@ package components
 import "tarta.com/modules/catalog"
 
 script ShelfScript() {
-  const OPTIONS = { loop: true }
+  const OPTIONS = { loop: false, align: 'start', containScroll: 'trimSnaps' }
   const emblaNode = document.querySelector('#shelf .embla')
 
   const prevBtnNode = document.querySelector('#shelf .embla__button--prev')
@@ -63,26 +63,27 @@ script ShelfScript() {
   emblaApi.on('destroy', removePrevNextBtnsClickHandlers)
 }
 
-templ Shelf(products catalog.ProductSearchQuery) {
+templ Shelf(input catalog.ProductSearchInput) {
 	<div id="shelf" class="relative">
 		<div
 			class="pointer-events-none p-4 absolute top-1/2 -translate-y-1/2 w-full flex justify-between items-center text-neutral-400 z-10"
 		>
-			<button class="embla__button--prev">
+			<button class="embla__button--prev pointer-events-auto">
 				<img src="/static/svg/arrow.svg" class="shrink-0"/>
 			</button>
-			<button class="embla__button--next rotate-180">
+			<button class="embla__button--next rotate-180 pointer-events-auto">
 				<img src="/static/svg/arrow.svg" class="shrink-0"/>
 			</button>
 		</div>
 		<div class="embla overflow-hidden mx-12">
 			<div class="embla__container flex ml-6">
-				for _, product := range products.ProductSearch.Products {
+				for _, product := range catalog.ProductSearch(input).ProductSearch.Products {
 					<div class="embla__slide flex-[0_0_calc(25%-24px)] min-w-0 my-0 mx-3">
 						@ProductCard(product)
 					</div>
 				}
 			</div>
 		</div>
+		@ShelfScript()
 	</div>
 }

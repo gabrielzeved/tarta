@@ -4,8 +4,10 @@ import "tarta.com/modules/catalog"
 
 import "fmt"
 
-templ ProductImage(image catalog.Image) {
-	<img class="aspect-[150/163] object-contain w-full" src={ image.ImageUrl }/>
+templ ProductImage(product catalog.ProductFragment) {
+	if len(product.GetSelectedItem().Images) > 0 {
+		<img class="aspect-[150/163] object-contain w-full" src={ product.GetSelectedItem().Images[0].ImageUrl }/>
+	}
 }
 
 templ ProductName(name string) {
@@ -14,19 +16,19 @@ templ ProductName(name string) {
 
 templ ProductPrices(product catalog.ProductFragment) {
 	<div class="flex flex-col">
-		if product.Items[0].Sellers[0].CommertialOffer.ListPrice != 0 {
+		if product.GetSelectedSeller().CommertialOffer.ListPrice != 0 {
 			<span class="text-neutral-400 text-sm line-through">
-				{ fmt.Sprintf("%d",  product.Items[0].Sellers[0].CommertialOffer.ListPrice)  }
+				{ fmt.Sprintf("%f",  product.GetSelectedSeller().CommertialOffer.ListPrice)  }
 			</span>
 		}
-		if product.Items[0].Sellers[0].CommertialOffer.Price != 0 {
+		if product.GetSelectedSeller().CommertialOffer.Price != 0 {
 			<span class="text-lg text-neutral-500">
-				{ fmt.Sprintf("%d",  product.Items[0].Sellers[0].CommertialOffer.Price)  }
+				{ fmt.Sprintf("%f",  product.GetSelectedSeller().CommertialOffer.Price)  }
 			</span>
 		}
-		if product.Items[0].Sellers[0].CommertialOffer.Installments[0].NumberOfInstallments > 0 {
+		if product.GetHighestInstallment().NumberOfInstallments > 0 {
 			<span class="text-neutral-400 text-sm">
-				{ fmt.Sprintf("%d", product.Items[0].Sellers[0].CommertialOffer.Installments[0].NumberOfInstallments) }x de { fmt.Sprintf("%d", product.Items[0].Sellers[0].CommertialOffer.Installments[0].Value) } sem juros
+				{ fmt.Sprintf("%d", product.GetHighestInstallment().NumberOfInstallments) }x de { fmt.Sprintf("%f", product.GetHighestInstallment().Value) } sem juros
 			</span>
 		}
 	</div>
@@ -35,15 +37,15 @@ templ ProductPrices(product catalog.ProductFragment) {
 templ ProductCard(product catalog.ProductFragment) {
 	<div class="flex flex-col border border-neutral-200 px-2 py-3 gap-2 h-full group">
 		<div class="relative">
-			// @ProductImage(product.Items[0].Images[0])
+			@ProductImage(product)
 			<div
 				class="animate-fade animate-reverse animate-duration-300 group-hover:animate-duration-150 group-hover:animate-fade-down"
 			></div>
 		</div>
 		<div class="mb-2">
-			@ProductName(product.ProductId)
+			@ProductName(product.ProductName)
 		</div>
 		<div class="flex-grow"></div>
-		// @ProductPrices(product)
+		@ProductPrices(product)
 	</div>
 }
