@@ -1,0 +1,116 @@
+package components
+
+type Slide struct {
+	Label     string
+	LinkLabel string
+	Href      string
+}
+
+type TopbarSchema struct {
+	slides []Slide
+}
+
+var topbarContent = TopbarSchema{
+	slides: []Slide{
+		{
+			Label:     "Frete Grátis acima de R$00,00",
+			LinkLabel: "saiba mais",
+			Href:      "#",
+		},
+		{
+			Label:     "Frete Grátis acima de R$00,00",
+			LinkLabel: "saiba mais",
+			Href:      "#",
+		},
+		{
+			Label:     "Frete Grátis acima de R$00,00",
+			LinkLabel: "saiba mais",
+			Href:      "#",
+		},
+	},
+}
+
+script TopbarScript() {
+  const OPTIONS = { loop: true }
+  const emblaNode = document.querySelector('#topbar .embla')
+
+  const prevBtnNode = document.querySelector('#topbar .embla__button--prev')
+  const nextBtnNode = document.querySelector('#topbar .embla__button--next')
+
+  const emblaApi = EmblaCarousel(emblaNode, OPTIONS)
+
+  const addTogglePrevNextBtnsActive = (emblaApi, prevBtn, nextBtn) => {
+    const togglePrevNextBtnsState = () => {
+      if (emblaApi.canScrollPrev()) prevBtn.removeAttribute('disabled')
+      else prevBtn.setAttribute('disabled', 'disabled')
+
+      if (emblaApi.canScrollNext()) nextBtn.removeAttribute('disabled')
+      else nextBtn.setAttribute('disabled', 'disabled')
+    }
+
+    emblaApi
+      .on('select', togglePrevNextBtnsState)
+      .on('init', togglePrevNextBtnsState)
+      .on('reInit', togglePrevNextBtnsState)
+
+    return () => {
+      prevBtn.removeAttribute('disabled')
+      nextBtn.removeAttribute('disabled')
+    }
+  }
+
+  const addPrevNextBtnsClickHandlers = (emblaApi, prevBtn, nextBtn) => {
+    const scrollPrev = () => {
+      emblaApi.scrollPrev()
+    }
+    const scrollNext = () => {
+      emblaApi.scrollNext()
+    }
+    prevBtn.addEventListener('click', scrollPrev, false)
+    nextBtn.addEventListener('click', scrollNext, false)
+
+    const removeTogglePrevNextBtnsActive = addTogglePrevNextBtnsActive(
+      emblaApi,
+      prevBtn,
+      nextBtn
+    )
+
+    return () => {
+      removeTogglePrevNextBtnsActive()
+      prevBtn.removeEventListener('click', scrollPrev, false)
+      nextBtn.removeEventListener('click', scrollNext, false)
+    }
+  }
+
+  const removePrevNextBtnsClickHandlers = addPrevNextBtnsClickHandlers(
+    emblaApi,
+    prevBtnNode,
+    nextBtnNode
+  )
+
+  emblaApi.on('destroy', removePrevNextBtnsClickHandlers)
+}
+
+templ Topbar() {
+	<div id="topbar" class="bg-neutral-900 p-3 flex items-center justify-center gap-4 text-neutral-100">
+		<button class="embla__button--prev">
+			<img src="/static/svg/chevron.svg" class="shrink-0"/>
+		</button>
+		<div class="embla overflow-hidden">
+			<div class="embla__container flex">
+				for _, item := range topbarContent.slides {
+					<span class="embla__slide text-sm text-center flex-[0_0_100%] min-w-0">
+						{ item.Label }
+						if len(item.LinkLabel) > 0 {
+							<a href={ templ.URL(item.Href) } class="text-neutral-100/60">{ item.LinkLabel }</a>
+						}
+					</span>
+				}
+			</div>
+		</div>
+		<button class="embla__button--next rotate-180">
+			<img src="/static/svg/chevron.svg" class="shrink-0"/>
+		</button>
+		@TopbarScript()
+	</div>
+}

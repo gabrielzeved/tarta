@@ -1,0 +1,49 @@
+package components
+
+import "tarta.com/modules/catalog"
+
+import "fmt"
+
+templ ProductImage(image catalog.Image) {
+	<img class="aspect-[150/163] object-contain w-full" src={ image.ImageUrl }/>
+}
+
+templ ProductName(name string) {
+	<span class="text-sm">{ name }</span>
+}
+
+templ ProductPrices(product catalog.ProductFragment) {
+	<div class="flex flex-col">
+		if product.Items[0].Sellers[0].CommertialOffer.ListPrice != 0 {
+			<span class="text-neutral-400 text-sm line-through">
+				{ fmt.Sprintf("%d",  product.Items[0].Sellers[0].CommertialOffer.ListPrice)  }
+			</span>
+		}
+		if product.Items[0].Sellers[0].CommertialOffer.Price != 0 {
+			<span class="text-lg text-neutral-500">
+				{ fmt.Sprintf("%d",  product.Items[0].Sellers[0].CommertialOffer.Price)  }
+			</span>
+		}
+		if product.Items[0].Sellers[0].CommertialOffer.Installments[0].NumberOfInstallments > 0 {
+			<span class="text-neutral-400 text-sm">
+				{ fmt.Sprintf("%d", product.Items[0].Sellers[0].CommertialOffer.Installments[0].NumberOfInstallments) }x de { fmt.Sprintf("%d", product.Items[0].Sellers[0].CommertialOffer.Installments[0].Value) } sem juros
+			</span>
+		}
+	</div>
+}
+
+templ ProductCard(product catalog.ProductFragment) {
+	<div class="flex flex-col border border-neutral-200 px-2 py-3 gap-2 h-full group">
+		<div class="relative">
+			// @ProductImage(product.Items[0].Images[0])
+			<div
+				class="animate-fade animate-reverse animate-duration-300 group-hover:animate-duration-150 group-hover:animate-fade-down"
+			></div>
+		</div>
+		<div class="mb-2">
+			@ProductName(product.ProductId)
+		</div>
+		<div class="flex-grow"></div>
+		// @ProductPrices(product)
+	</div>
+}

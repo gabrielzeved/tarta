@@ -1,0 +1,88 @@
+package components
+
+import "tarta.com/modules/catalog"
+
+script ShelfScript() {
+  const OPTIONS = { loop: true }
+  const emblaNode = document.querySelector('#shelf .embla')
+
+  const prevBtnNode = document.querySelector('#shelf .embla__button--prev')
+  const nextBtnNode = document.querySelector('#shelf .embla__button--next')
+
+  const emblaApi = EmblaCarousel(emblaNode, OPTIONS)
+
+  const addTogglePrevNextBtnsActive = (emblaApi, prevBtn, nextBtn) => {
+    const togglePrevNextBtnsState = () => {
+      if (emblaApi.canScrollPrev()) prevBtn.removeAttribute('disabled')
+      else prevBtn.setAttribute('disabled', 'disabled')
+
+      if (emblaApi.canScrollNext()) nextBtn.removeAttribute('disabled')
+      else nextBtn.setAttribute('disabled', 'disabled')
+    }
+
+    emblaApi
+      .on('select', togglePrevNextBtnsState)
+      .on('init', togglePrevNextBtnsState)
+      .on('reInit', togglePrevNextBtnsState)
+
+    return () => {
+      prevBtn.removeAttribute('disabled')
+      nextBtn.removeAttribute('disabled')
+    }
+  }
+
+  const addPrevNextBtnsClickHandlers = (emblaApi, prevBtn, nextBtn) => {
+    const scrollPrev = () => {
+      emblaApi.scrollPrev()
+    }
+    const scrollNext = () => {
+      emblaApi.scrollNext()
+    }
+    prevBtn.addEventListener('click', scrollPrev, false)
+    nextBtn.addEventListener('click', scrollNext, false)
+
+    const removeTogglePrevNextBtnsActive = addTogglePrevNextBtnsActive(
+      emblaApi,
+      prevBtn,
+      nextBtn
+    )
+
+    return () => {
+      removeTogglePrevNextBtnsActive()
+      prevBtn.removeEventListener('click', scrollPrev, false)
+      nextBtn.removeEventListener('click', scrollNext, false)
+    }
+  }
+
+  const removePrevNextBtnsClickHandlers = addPrevNextBtnsClickHandlers(
+    emblaApi,
+    prevBtnNode,
+    nextBtnNode
+  )
+
+  emblaApi.on('destroy', removePrevNextBtnsClickHandlers)
+}
+
+templ Shelf(products catalog.ProductSearchQuery) {
+	<div id="shelf" class="relative">
+		<div
+			class="pointer-events-none p-4 absolute top-1/2 -translate-y-1/2 w-full flex justify-between items-center text-neutral-400 z-10"
+		>
+			<button class="embla__button--prev">
+				<img src="/static/svg/arrow.svg" class="shrink-0"/>
+			</button>
+			<button class="embla__button--next rotate-180">
+				<img src="/static/svg/arrow.svg" class="shrink-0"/>
+			</button>
+		</div>
+		<div class="embla overflow-hidden mx-12">
+			<div class="embla__container flex ml-6">
+				for _, product := range products.ProductSearch.Products {
+					<div class="embla__slide flex-[0_0_calc(25%-24px)] min-w-0 my-0 mx-3">
+						@ProductCard(product)
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+}

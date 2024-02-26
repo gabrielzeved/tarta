@@ -1,0 +1,10 @@
+package pages
+
+import "tarta.com/modules/components"
+import "tarta.com/modules/catalog"
+
+templ HomePage(products catalog.ProductSearchQuery) {
+	@components.Banners()
+	@components.Shelf(products)
+	<button hx-get="/about" hx-swap="innerHTML" hx-target="#main-content">Go to about</button>
+}

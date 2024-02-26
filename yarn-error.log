@@ -1,0 +1,44 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js browser-sync start --files ./**/*.go, ./**/*.templ --ignore *_templ.go --port 3001 --proxy localhost:3000 --middleware function(req, res, next) { \
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); \
+      return next(); \
+    }
+
+PATH: 
+  C:\Users\canal\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\canal\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Users\canal\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Python27;C:\Python27\Scripts;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\CMake\bin;C:\msys64\mingw64\bin;C:\MinGW\bin;C:\Program Files\dotnet;C:\webdrivers;C:\src\flutter\bin;C:\Users\canal\AppData\Local\Pub\Cache\bin;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\Go\bin;C:\Program Files\GitHub CLI;C:\php;C:\ProgramData\chocolatey\bin;C:\Users\canal\AppData\Local\pnpm;C:\Users\canal\scoop\shims;C:\Users\canal\AppData\Local\Programs\Python\Python39\Scripts;C:\Users\canal\AppData\Local\Programs\Python\Python39;C:\Ruby27-x64\bin;C:\Users\canal\.cargo\bin;C:\Users\canal\AppData\Local\Microsoft\WindowsApps;C:\Users\canal\AppData\Roaming\npm;C:\Users\canal\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\vtex\bin;C:\Program Files\Java\jdk-17.0.3.1\bin;C:\Program Files\PostgreSQL\14\bin;C:\Users\canal\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\canal\.dotnet\tools;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2022.1\bin;C:\Program Files\JetBrains\PyCharm Community Edition 2022.1\bin;C:\src\flutter\bin;C:\Users\canal\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin;C:\Users\canal\.deno\bin;C:\Users\canal\.dotnet\tools;C:\Users\canal\go\bin;C:\Users\canal\AppData\Local\ComposerSetup\bin;C:\Users\canal\AppData\Roaming\Composer\vendor\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.22.17
+
+Node version: 
+  18.17.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: Line breaks can't be quoted on Windows
+      at quoteForCmd (C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135249:11)
+      at Formatter.quote (C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135408:12)
+      at [format] (C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135459:28)
+      at C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135827:58
+      at Array.map (<anonymous>)
+      at [format] (C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135827:26)
+      at ShellString.toString (C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135823:30)
+      at sh (C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135916:55)
+      at C:\Users\canal\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:62468:52
+      at Generator.next (<anonymous>)
+
+npm manifest: 
+  {
+    "devDependencies": {
+      "browser-sync": "^2.29.3",
+      "tailwindcss": "^3.3.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
